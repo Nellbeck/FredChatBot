@@ -20,7 +20,7 @@ function Chatbot() {
     setInput("");
 
     try {
-      const apiUrl = "https://gray-ground-0d1b9b703.4.azurestaticapps.net" || 'http://localhost:5000';
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
       const response = await axios.post(`${apiUrl}/api/qna`, { question: messageText });
       const botResponse = response.data.answer;
       typeOutMessage(botResponse);

@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 
 // Serve static files from the React app
 app.use(express.static('build'));
-
+app.use(express.static(path.join(__dirname, '../chatbot-app/build')));
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -34,7 +34,9 @@ app.post('/api/qna', async (req, res) => {
     res.status(500).send('Error querying QnA Maker');
   }
 });
-
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../chatbot-app/build', 'index.html'));
+});
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
