@@ -22,8 +22,8 @@ function Chatbot() {
     console.log("API URL:", process.env.REACT_APP_API_URL);
 
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-      const response = await axios.post(`${apiUrl}/api/qna`, { question: messageText });
+      const apiUrl = "https://lively-bay-06b08411e.4.azurestaticapps.net/api/qna" || 'http://localhost:5000/api/qna';
+      const response = await axios.post(`${apiUrl}`, { question: messageText });
       const botResponse = response.data.answer;
       typeOutMessage(botResponse);
       
