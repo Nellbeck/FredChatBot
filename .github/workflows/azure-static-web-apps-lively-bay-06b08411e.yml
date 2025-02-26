@@ -35,7 +35,7 @@ jobs:
       - name: Install dependencies for Azure Function API
         run: |
           cd api
-          npm install
+          npm install --omit=dev
 
       # (Optional) Build API if needed
       - name: Build Azure Function API (if needed)
