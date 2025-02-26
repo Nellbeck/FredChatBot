@@ -53,7 +53,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "./chatbot-app"
-          api_location: "./ChatBot/api" # RÄTT API-PATH
+          api_location: "./api" # RÄTT API-PATH
           output_location: "build"
 
   close_pull_request_job:
