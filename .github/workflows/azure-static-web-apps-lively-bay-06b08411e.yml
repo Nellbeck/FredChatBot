@@ -27,23 +27,17 @@ jobs:
           npm install --force
           chmod +x node_modules/.bin/react-scripts
 
-      # Install dependencies for backend (Azure Function API)
-      - name: Install dependencies for Azure Function API
-        run: |
-          cd api
-          npm install
-
       # Build frontend
       - name: Build frontend
         run: |
           cd chatbot-app
           npm run build
 
-      # Build Azure Function API (om .NET används)
+      # Build Azure Function API
       - name: Build Azure Function API (.NET)
         run: |
           cd api
-          dotnet build --configuration Release
+          dotnet publish --configuration Release --output ./publish
 
       - name: Build And Deploy
         id: builddeploy
@@ -53,7 +47,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "./chatbot-app"
-          api_location: "./api" # RÄTT API-PATH
+          api_location: "./api/publish"
           output_location: "build"
 
   close_pull_request_job:
