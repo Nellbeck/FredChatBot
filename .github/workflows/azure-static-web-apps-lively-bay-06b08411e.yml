@@ -27,8 +27,11 @@ jobs:
           npm install
           chmod +x node_modules/.bin/react-scripts
 
+      # Install Azure Functions Core Tools
+      - name: Install Azure Functions Core Tools
+        run: npm install -g azure-functions-core-tools@4 --unsafe-perm true
 
-      # Install dependencies for backend (Azure Function API - Node.js)
+      # Install dependencies for backend (Azure Function API)
       - name: Install dependencies for Azure Function API
         run: |
           cd api
@@ -56,6 +59,8 @@ jobs:
           app_location: "./chatbot-app"
           api_location: "api"  # Correct path to your API
           output_location: "build"
+        env:
+          FUNCTIONS_WORKER_RUNTIME: node  # Ensure correct runtime for Azure Functions
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -68,5 +73,6 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_LIVELY_BAY_06B08411E }}
           action: "close"
+
 
 
