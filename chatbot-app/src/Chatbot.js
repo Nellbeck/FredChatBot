@@ -19,6 +19,7 @@ function Chatbot() {
     const userMessage = { sender: 'user', text: messageText };
     setMessages(prev => [...prev, userMessage]);
     setInput("");
+    console.log("API URL:", process.env.REACT_APP_API_URL);
 
     try {
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';

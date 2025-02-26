@@ -2,17 +2,17 @@ const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');  // ✅ Import path module
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Serve static files from the React app
-app.use(express.static('build'));
-app.use(express.static(path.join(__dirname, '../chatbot-app/build')));
+// ✅ Middleware
 app.use(bodyParser.json());
 app.use(cors());
 
+// ✅ API Route
 app.post('/api/qna', async (req, res) => {
   const question = req.body.question;
 
@@ -27,6 +27,7 @@ app.post('/api/qna', async (req, res) => {
         },
       }
     );
+
     const answer = response.data.answers[0].answer;
     res.json({ answer });
   } catch (error) {
@@ -34,10 +35,17 @@ app.post('/api/qna', async (req, res) => {
     res.status(500).send('Error querying QnA Maker');
   }
 });
+
+// ✅ Serve static files AFTER API routes
+app.use(express.static(path.join(__dirname, '../chatbot-app/build')));
+
+// ✅ Handle React routes (catch-all)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../chatbot-app/build', 'index.html'));
 });
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
 
