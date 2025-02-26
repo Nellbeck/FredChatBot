@@ -42,7 +42,7 @@ jobs:
       # Build Azure Function API (om .NET används)
       - name: Build Azure Function API (.NET)
         run: |
-          cd api
+          cd api/src/functions
           dotnet build --configuration Release
 
       - name: Build And Deploy
@@ -53,7 +53,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "./chatbot-app"
-          api_location: "./api" # RÄTT API-PATH
+          api_location: "./api/src/functions" # RÄTT API-PATH
           output_location: "build"
 
   close_pull_request_job:
