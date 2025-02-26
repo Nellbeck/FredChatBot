@@ -24,8 +24,9 @@ jobs:
       - name: Install dependencies for frontend
         run: |
           cd chatbot-app
-          npm install --force
+          npm install
           chmod +x node_modules/.bin/react-scripts
+
 
       # Install dependencies for backend (Azure Function API - Node.js)
       - name: Install dependencies for Azure Function API
@@ -52,7 +53,7 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_LIVELY_BAY_06B08411E }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "./chatbot-app"
+          app_location: "src"
           api_location: "api"  # Correct path to your API
           output_location: "build"
 
