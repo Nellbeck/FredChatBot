@@ -24,7 +24,8 @@ jobs:
       - name: Install dependencies for frontend
         run: |
           cd chatbot-app
-          npm install --legacy-peer-deps
+          npm install --force
+          chmod +x node_modules/.bin/react-scripts
 
       # Install dependencies for backend
       - name: Install dependencies for backend
