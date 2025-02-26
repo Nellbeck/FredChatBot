@@ -36,3 +36,110 @@
     transform: rotate(360deg);
   }
 }
+
+/* Chatbot Container */
+.chatbot-container {
+  max-width: 600px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+}
+
+/* Predefined Questions */
+.predefined-questions {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.question-button {
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: #f0f0f0;
+  transition: background 0.2s;
+}
+
+.question-button:hover {
+  background: #ddd;
+}
+
+/* Chat Window */
+.chat-window {
+  border: 1px solid #ccc;
+  padding: 10px;
+  min-height: 300px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+/* Messages */
+.message {
+  display: flex;
+  margin: 5px;
+  max-width: 80%;
+  padding: 8px 12px;
+  border-radius: 10px;
+  white-space: pre-wrap;
+}
+
+.message.user {
+  align-self: flex-end;
+  background: #0084ff;
+  color: white;
+}
+
+.message.bot {
+  align-self: flex-start;
+  background: #e0e0e0;
+  color: black;
+  text-align: left; /* Se till att texten börjar från vänster */
+}
+
+
+/* Input Container */
+.input-container {
+  margin-top: 10px;
+  display: flex;
+}
+
+.input-container input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.input-container button {
+  padding: 10px 20px;
+  margin-left: 5px;
+  font-size: 16px;
+  background: #0084ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.2s;
+}
+
+.input-container button:hover {
+  background: #006bcc;
+}
+.message-container {
+  display: flex;
+  width: 100%;
+}
+
+.message-container.user {
+  justify-content: flex-end;
+}
+
+.message-container.bot {
+  justify-content: flex-start;
+  text-align: left; /* Se till att hela containern är vänsterjusterad */
+}
+
+

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './App.css'; // Import external CSS
 
 function Chatbot() {
   const [messages, setMessages] = useState([]);
@@ -15,25 +16,40 @@ function Chatbot() {
 
   const sendMessage = async (messageText) => {
     if (!messageText.trim()) return;
-    
+  
     const userMessage = { sender: 'user', text: messageText };
     setMessages(prev => [...prev, userMessage]);
     setInput("");
-    console.log("API URL:", process.env.REACT_APP_API_URL);
-
+  
     try {
-      const apiUrl = "https://lively-bay-06b08411e.4.azurestaticapps.net/api/qna" || 'http://localhost:5000/api/qna';
-      const response = await axios.post(`${apiUrl}`, { question: messageText });
-      const botResponse = response.data.answer;
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:7071/api/qna";
+      console.log("Sending request to:", API_URL);
+  
+      const response = await axios.post(API_URL, { question: messageText });
+  
+      console.log("Full API Response:", response); // ✅ Debugging log
+      console.log("Response Data:", response.data); // ✅ Check the actual data
+  
+      let botResponse = "Sorry, I didn't understand that.";
+  
+      if (typeof response.data === "string") {
+        botResponse = response.data;
+      } else if (response.data?.answers?.length > 0) {
+        botResponse = response.data.answers[0].answer;
+      } else {
+        console.warn("No valid answer found in response.");
+      }
+  
+      console.log("Final Bot Response:", botResponse);
       typeOutMessage(botResponse);
-      
+  
     } catch (error) {
-      console.error('Error sending message:', error);
-      typeOutMessage('Sorry, something went wrong.');
+      console.error("Error sending message:", error);
+      typeOutMessage("Sorry, something went wrong.");
     }
   };
+  
 
-  // Function to display message letter by letter
   const typeOutMessage = (fullMessage) => {
     let currentText = "";
     let index = 0;
@@ -54,7 +70,7 @@ function Chatbot() {
       } else {
         clearInterval(interval);
       }
-    }, 50); // Adjust speed of typing here
+    }, 50);
   };
 
   const handleKeyPress = (e) => {
@@ -62,66 +78,40 @@ function Chatbot() {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: 'auto', fontFamily: 'Arial, sans-serif' }}>
-      {/* Pre-defined Questions */}
-      <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginBottom: '10px' }}>
+    <div className="chatbot-container">
+      <div className="predefined-questions">
         {predefinedQuestions.map((question, index) => (
-          <button 
-            key={index} 
-            onClick={() => sendMessage(question)}
-            style={{ padding: '8px 12px', borderRadius: '5px', border: '1px solid #ccc', cursor: 'pointer' }}
-          >
+          <button key={index} onClick={() => sendMessage(question)} className="question-button">
             {question}
           </button>
         ))}
       </div>
 
-      {/* Chat Window */}
-      <div 
-        style={{
-          border: '1px solid #ccc', 
-          padding: '10px', 
-          minHeight: '300px', 
-          overflowY: 'auto',
-          backgroundColor: '#f9f9f9'
-        }}
-      >
-        {messages.map((msg, index) => (
-          <div key={index} style={{ textAlign: msg.sender === 'bot' ? 'left' : 'right' }}>
-            <div style={{
-              display: 'inline-block',
-              background: msg.sender === 'bot' ? '#e0e0e0' : '#0084ff',
-              color: msg.sender === 'bot' ? '#000' : '#fff',
-              padding: '8px 12px',
-              borderRadius: '10px',
-              margin: '5px',
-              maxWidth: '80%',
-              whiteSpace: 'pre-wrap'
-            }}>
-              {msg.text}
-            </div>
+    <div className="chat-window">
+      {messages.map((msg, index) => (
+        <div key={index} className={`message-container ${msg.sender}`}>
+          <div className={`message ${msg.sender}`}>
+            {msg.text}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
+    </div>
 
-      {/* Input Field */}
-      <div style={{ marginTop: '10px', display: 'flex' }}>
+      <div className="input-container">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
-          style={{ flex: 1, padding: '10px', fontSize: '16px' }}
           placeholder="Type your message here..."
         />
-        <button onClick={() => sendMessage(input)} style={{ padding: '10px 20px', marginLeft: '5px', fontSize: '16px' }}>
-          Send
-        </button>
+        <button onClick={() => sendMessage(input)}>Send</button>
       </div>
     </div>
   );
 }
 
 export default Chatbot;
+
 
 
