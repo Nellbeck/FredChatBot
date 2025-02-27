@@ -36,6 +36,7 @@ function Chatbot() {
 
   // Ref for auto-scrolling
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -63,7 +64,7 @@ function Chatbot() {
     setIsTyping(true); // Disable input until bot finishes responding
     setMessages((prev) => [...prev, { sender: "user", text: messageText }]);
     setInput("");
-  
+
     // Check if message contains "?" to count it as a question
     if (messageText.includes("?")) {
       document.querySelectorAll(".question-button").forEach((btn) => {
@@ -115,6 +116,9 @@ function Chatbot() {
     }
   
     setIsTyping(false); // Re-enable input after bot response
+
+    // Focus back to input field
+    setTimeout(() => inputRef.current?.focus(), 10);
   };
   
   const typeOutMessage = (fullMessage) => {
@@ -174,6 +178,7 @@ function Chatbot() {
 
         <div className="input-container">
           <input
+            ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
