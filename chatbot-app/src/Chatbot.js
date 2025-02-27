@@ -10,22 +10,24 @@ function Chatbot() {
       "Tell me a joke!",
       "Where do you live?",
       "How can I contact you?",
-      "What's your favorite color?",
-      "What's the weather like?",
-      "Can you give me advice?",
+      "What is your favorite book?",
+      "Have you worked on any cool projects?",
+      "What are your hobbies?",
       "Tell me a fun fact!",
-      "Do you like pizza?"
+      "How would you describe yourself?",
+      "How does your CV look like?"
     ],
     []
   );
 
   const [messages, setMessages] = useState([
-    { sender: "bot", text: "Hello! How can I help you today?" }
+    { sender: "bot", text: "Hello and welcome! I'm Fredriks alter ego. Ask me anything and I'll do my best to answer." }
   ]);
   const [input, setInput] = useState("");
   const [predefinedQuestions, setPredefinedQuestions] = useState([]);
   const [, setAskedQuestions] = useState([]);
   const [badges, setBadges] = useState([]);
+  const [isTyping, setIsTyping] = useState(false); // Track if the bot is responding
 
   // Ref for auto-scrolling
   const messagesEndRef = useRef(null);
@@ -51,8 +53,9 @@ function Chatbot() {
   }, [getRandomQuestions]);
 
   const sendMessage = async (messageText) => {
-    if (!messageText.trim()) return;
+    if (!messageText.trim() || isTyping) return;
 
+    setIsTyping(true); // Disable input until bot finishes responding
     setMessages((prev) => [...prev, { sender: "user", text: messageText }]);
     setInput("");
     setAskedQuestions((prev) => {
@@ -73,33 +76,38 @@ function Chatbot() {
         botResponse = response.data.answers[0].answer;
       }
 
-      typeOutMessage(botResponse);
+      await typeOutMessage(botResponse);
     } catch (error) {
       console.error("Error sending message:", error);
-      typeOutMessage("Sorry, something went wrong.");
+      await typeOutMessage("Sorry, something went wrong.");
     }
+
+    setIsTyping(false); // Re-enable input after bot response
   };
 
   const typeOutMessage = (fullMessage) => {
-    let currentText = "";
-    let index = 0;
-    const interval = setInterval(() => {
-      if (index < fullMessage.length) {
-        currentText += fullMessage[index];
-        setMessages((prev) => {
-          const newMessages = [...prev];
-          if (newMessages.length > 0 && newMessages[newMessages.length - 1].sender === "bot") {
-            newMessages[newMessages.length - 1].text = currentText;
-          } else {
-            newMessages.push({ sender: "bot", text: currentText });
-          }
-          return newMessages;
-        });
-        index++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 50);
+    return new Promise((resolve) => {
+      let currentText = "";
+      let index = 0;
+      const interval = setInterval(() => {
+        if (index < fullMessage.length) {
+          currentText += fullMessage[index];
+          setMessages((prev) => {
+            const newMessages = [...prev];
+            if (newMessages.length > 0 && newMessages[newMessages.length - 1].sender === "bot") {
+              newMessages[newMessages.length - 1].text = currentText;
+            } else {
+              newMessages.push({ sender: "bot", text: currentText });
+            }
+            return newMessages;
+          });
+          index++;
+        } else {
+          clearInterval(interval);
+          resolve(); // Resolve when typing is complete
+        }
+      }, 50);
+    });
   };
 
   const checkAchievements = (questionCount) => {
@@ -115,7 +123,7 @@ function Chatbot() {
       <div className="chat-content">
         <div className="predefined-questions">
           {predefinedQuestions.map((question, index) => (
-            <button key={index} onClick={() => sendMessage(question)} className="question-button">
+            <button key={index} onClick={() => sendMessage(question)} className="question-button" disabled={isTyping}>
               {question}
             </button>
           ))}
@@ -139,8 +147,11 @@ function Chatbot() {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && sendMessage(input)}
             placeholder="Type your message here..."
+            disabled={isTyping} // Disable input while typing
           />
-          <button onClick={() => sendMessage(input)}>Send</button>
+          <button onClick={() => sendMessage(input)} disabled={isTyping}>
+            {isTyping ? "Typing..." : "Send"}
+          </button>
         </div>
       </div>
       
@@ -155,3 +166,4 @@ function Chatbot() {
 }
 
 export default Chatbot;
+
