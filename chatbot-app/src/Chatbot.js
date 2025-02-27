@@ -24,13 +24,11 @@ function Chatbot() {
   ]);
   const [input, setInput] = useState("");
   const [predefinedQuestions, setPredefinedQuestions] = useState([]);
-  const [setAskedQuestions] = useState([]);
+  const [, setAskedQuestions] = useState([]);
   const [badges, setBadges] = useState([]);
 
   // Ref for auto-scrolling
   const messagesEndRef = useRef(null);
-
-
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
