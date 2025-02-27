@@ -7,13 +7,13 @@ function Chatbot() {
     () => [
       "Who are you?",
       "What can you do?",
-      "Tell me a joke!",
+      "Do you know a joke?",
       "Where do you live?",
       "How can I contact you?",
       "What is your favorite book?",
       "Have you worked on any cool projects?",
       "What are your hobbies?",
-      "Tell me a fun fact!",
+      "Do you know any fun fact?",
       "How would you describe yourself?",
       "How does your CV look like?"
     ],
@@ -58,15 +58,18 @@ function Chatbot() {
     setIsTyping(true); // Disable input until bot finishes responding
     setMessages((prev) => [...prev, { sender: "user", text: messageText }]);
     setInput("");
+  // Check if message contains "?" to count it as a question
+  if (messageText.includes("?")) {
     setAskedQuestions((prev) => {
       const newAsked = [...prev, messageText];
       setPredefinedQuestions(getRandomQuestions(newAsked));
       checkAchievements(newAsked.length);
       return newAsked;
     });
+  }
 
     try {
-      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:7071/api/qna";
+      const API_URL = process.env.REACT_APP_API_URL;
       const response = await axios.post(API_URL, { question: messageText });
 
       let botResponse = "Sorry, I didn't understand that.";
@@ -106,7 +109,7 @@ function Chatbot() {
           clearInterval(interval);
           resolve(); // Resolve when typing is complete
         }
-      }, 50);
+      }, 25);
     });
   };
 
