@@ -24,7 +24,7 @@ function Chatbot() {
   ]);
   const [input, setInput] = useState("");
   const [predefinedQuestions, setPredefinedQuestions] = useState([]);
-  const [askedQuestions, setAskedQuestions] = useState([]);
+  const [setAskedQuestions] = useState([]);
   const [badges, setBadges] = useState([]);
 
   // Ref for auto-scrolling
@@ -51,7 +51,7 @@ function Chatbot() {
   useEffect(() => {
     setPredefinedQuestions(getRandomQuestions([]));
   }, [getRandomQuestions]);
-  
+
   const sendMessage = async (messageText) => {
     if (!messageText.trim()) return;
 
