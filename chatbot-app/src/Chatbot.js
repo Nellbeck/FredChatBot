@@ -30,9 +30,7 @@ function Chatbot() {
   // Ref for auto-scrolling
   const messagesEndRef = useRef(null);
 
-  useEffect(() => {
-    setPredefinedQuestions(getRandomQuestions([]));
-  }, []);
+
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -50,6 +48,10 @@ function Chatbot() {
     [allPredefinedQuestions]
   );
 
+  useEffect(() => {
+    setPredefinedQuestions(getRandomQuestions([]));
+  }, [getRandomQuestions]);
+  
   const sendMessage = async (messageText) => {
     if (!messageText.trim()) return;
 
