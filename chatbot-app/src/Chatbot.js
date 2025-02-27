@@ -23,6 +23,11 @@ function Chatbot() {
   const [messages, setMessages] = useState([
     { sender: "bot", text: "Hello and welcome! I'm Fredriks alter ego. Ask me anything and I'll do my best to answer." }
   ]);
+
+  useEffect(() => {
+    typeOutMessage("Hello and welcome! I'm Fredrik's alter ego. Ask me anything and I'll do my best to answer.");
+  }, []);
+
   const [input, setInput] = useState("");
   const [predefinedQuestions, setPredefinedQuestions] = useState([]);
   const [, setAskedQuestions] = useState([]);
@@ -52,42 +57,66 @@ function Chatbot() {
     setPredefinedQuestions(getRandomQuestions([]));
   }, [getRandomQuestions]);
 
-  const sendMessage = async (messageText) => {
+  const sendMessage = (messageText) => {
     if (!messageText.trim() || isTyping) return;
-
+  
     setIsTyping(true); // Disable input until bot finishes responding
     setMessages((prev) => [...prev, { sender: "user", text: messageText }]);
     setInput("");
-  // Check if message contains "?" to count it as a question
-  if (messageText.includes("?")) {
-    setAskedQuestions((prev) => {
-      const newAsked = [...prev, messageText];
-      setPredefinedQuestions(getRandomQuestions(newAsked));
-      checkAchievements(newAsked.length);
-      return newAsked;
-    });
-  }
-
+  
+    // Check if message contains "?" to count it as a question
+    if (messageText.includes("?")) {
+      document.querySelectorAll(".question-button").forEach((btn) => {
+        if (btn.innerText === messageText) {
+          btn.classList.add("fade-out"); // Apply fade-out effect
+        }
+      });
+  
+      setTimeout(() => {
+        setAskedQuestions((prev) => {
+          const newAsked = [...prev, messageText];
+  
+          // Clear animation classes before updating questions
+          document.querySelectorAll(".question-button").forEach((btn) => {
+            btn.classList.remove("fade-out", "fade-in");
+          });
+  
+          // Update predefined questions after fade-out completes
+          setPredefinedQuestions(getRandomQuestions(newAsked));
+  
+          checkAchievements(newAsked.length);
+          return newAsked;
+        });
+  
+        // Delay to ensure new elements are rendered before adding fade-in effect
+        setTimeout(() => {
+          document.querySelectorAll(".question-button").forEach((btn) => {
+            btn.classList.add("fade-in");
+          });
+        }, 10); // Tiny delay to ensure new buttons exist before adding class
+      }, 500); // Wait 0.5s for fade-out effect
+    }
+  
     try {
       const API_URL = process.env.REACT_APP_API_URL;
-      const response = await axios.post(API_URL, { question: messageText });
-
+      const response = axios.post(API_URL, { question: messageText });
+  
       let botResponse = "Sorry, I didn't understand that.";
       if (typeof response.data === "string") {
         botResponse = response.data;
       } else if (response.data?.answers?.length > 0) {
         botResponse = response.data.answers[0].answer;
       }
-
-      await typeOutMessage(botResponse);
+  
+     typeOutMessage(botResponse);
     } catch (error) {
       console.error("Error sending message:", error);
-      await typeOutMessage("Sorry, something went wrong.");
+     typeOutMessage("Sorry, something went wrong.");
     }
-
+  
     setIsTyping(false); // Re-enable input after bot response
   };
-
+  
   const typeOutMessage = (fullMessage) => {
     return new Promise((resolve) => {
       let currentText = "";
