@@ -38,6 +38,15 @@ function Chatbot() {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
+  // See if this will make the first request faster.
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: "ping" }) // Dummy request
+    }).catch(() => {}); // Ignore errors, just warming up the API
+  }, []);
+
   // Scroll to bottom whenever messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
