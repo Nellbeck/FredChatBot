@@ -57,7 +57,7 @@ function Chatbot() {
     setPredefinedQuestions(getRandomQuestions([]));
   }, [getRandomQuestions]);
 
-  const sendMessage = (messageText) => {
+  const sendMessage = async (messageText) => {
     if (!messageText.trim() || isTyping) return;
   
     setIsTyping(true); // Disable input until bot finishes responding
@@ -99,7 +99,7 @@ function Chatbot() {
   
     try {
       const API_URL = process.env.REACT_APP_API_URL;
-      const response = axios.post(API_URL, { question: messageText });
+      const response = await axios.post(API_URL, { question: messageText });
   
       let botResponse = "Sorry, I didn't understand that.";
       if (typeof response.data === "string") {
@@ -108,10 +108,10 @@ function Chatbot() {
         botResponse = response.data.answers[0].answer;
       }
   
-     typeOutMessage(botResponse);
+      await typeOutMessage(botResponse);
     } catch (error) {
       console.error("Error sending message:", error);
-     typeOutMessage("Sorry, something went wrong.");
+      await typeOutMessage("Sorry, something went wrong.");
     }
   
     setIsTyping(false); // Re-enable input after bot response
