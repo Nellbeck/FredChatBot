@@ -40,13 +40,19 @@ function Chatbot() {
 
   // See if this will make the first request faster.
   useEffect(() => {
+    console.time("API Warm-up Time");
+    
     fetch(process.env.REACT_APP_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: "ping" }) // Dummy request
-    }).catch(() => {}); // Ignore errors, just warming up the API
-  }, []);
-
+      body: JSON.stringify({ question: "ping" })
+    })
+      .then(() => console.timeEnd("API Warm-up Time"))
+      .catch(() => console.timeEnd("API Warm-up Time")); // Ensure timer stops even if there's an error
+  
+  }, []); // <-- Empty dependency array ensures this runs only once
+  
+  
   // Scroll to bottom whenever messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
