@@ -25,7 +25,7 @@ function Chatbot() {
   ]);
 
   useEffect(() => {
-    typeOutMessage("Hello and welcome! I'm Fredrik's alter ego. Ask me anything and I'll do my best to answer.");
+    typeOutMessage("Hello and welcome! See me Fredrik's alter ego. Ask me anything and I'll do my best to answer.");
   }, []);
 
   const [input, setInput] = useState("");
@@ -169,6 +169,16 @@ function Chatbot() {
     if (newBadges.length > 0) setBadges([...badges, ...newBadges]);
   };
 
+  const formatMessage = (text) => {
+    return text.split(/(https?:\/\/\S+)/g).map((part, index) =>
+      part.match(/https?:\/\/\S+/) ? (
+        <a key={index} href={part} target="_blank" rel="noopener noreferrer">{part}</a>
+      ) : (
+        part
+      )
+    );
+  };
+
   return (
     <div className="chatbot-container">
       <div className="chat-content">
@@ -191,8 +201,8 @@ function Chatbot() {
                   className="bot-avatar" 
                 />
               )}
-              <p>{msg.text}</p>
-            </div>
+              <div>{formatMessage(msg.text)}</div>
+              </div>
           ))}
             <div ref={messagesEndRef} /> {/* Invisible div to scroll to */}
           </div>
