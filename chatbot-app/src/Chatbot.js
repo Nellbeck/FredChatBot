@@ -33,6 +33,7 @@ function Chatbot() {
   const [, setAskedQuestions] = useState([]);
   const [badges, setBadges] = useState([]);
   const [isTyping, setIsTyping] = useState(false); // Track if the bot is responding
+  const [loadingText, setLoadingText] = useState(".");
 
   // Ref for auto-scrolling
   const messagesEndRef = useRef(null);
@@ -58,6 +59,15 @@ function Chatbot() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  useEffect(() => {
+    if (isTyping) {
+      const interval = setInterval(() => {
+        setLoadingText((prev) => (prev === "..." ? "." : prev + "."));
+      }, 500);
+      return () => clearInterval(interval);
+    }
+  }, [isTyping]);
+
   const getRandomQuestions = useCallback(
     (excludedQuestions) => {
       const availableQuestions = allPredefinedQuestions.filter(
@@ -77,7 +87,7 @@ function Chatbot() {
     if (!messageText.trim() || isTyping) return;
   
     setIsTyping(true); // Disable input until bot finishes responding
-    setMessages((prev) => [...prev, { sender: "user", text: messageText }]);
+    setMessages((prev) => [...prev, { sender: "user", text: messageText }, { sender: "bot", text: loadingText }]);
     setInput("");
 
     // Check if message contains "?" to count it as a question
