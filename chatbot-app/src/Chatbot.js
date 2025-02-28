@@ -33,7 +33,6 @@ function Chatbot() {
   const [, setAskedQuestions] = useState([]);
   const [badges, setBadges] = useState([]);
   const [isTyping, setIsTyping] = useState(false); // Track if the bot is responding
-  const [loadingText, setLoadingText] = useState(".");
 
   // Ref for auto-scrolling
   const messagesEndRef = useRef(null);
@@ -50,9 +49,7 @@ function Chatbot() {
     })
       .then(() => console.timeEnd("API Warm-up Time"))
       .catch(() => console.timeEnd("API Warm-up Time")); // Ensure timer stops even if there's an error
-  
   }, []); // <-- Empty dependency array ensures this runs only once
-  
   
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -61,8 +58,17 @@ function Chatbot() {
 
   useEffect(() => {
     if (isTyping) {
+      let dots = [".", "..", "..."];
+      let index = 0;
       const interval = setInterval(() => {
-        setLoadingText((prev) => (prev === "..." ? "." : prev + "."));
+        setMessages((prev) => {
+          const newMessages = [...prev];
+          if (newMessages.length > 0 && newMessages[newMessages.length - 1].sender === "bot") {
+            newMessages[newMessages.length - 1].text = dots[index];
+          }
+          return newMessages;
+        });
+        index = (index + 1) % dots.length;
       }, 500);
       return () => clearInterval(interval);
     }
@@ -87,7 +93,7 @@ function Chatbot() {
     if (!messageText.trim() || isTyping) return;
   
     setIsTyping(true); // Disable input until bot finishes responding
-    setMessages((prev) => [...prev, { sender: "user", text: messageText }, { sender: "bot", text: loadingText }]);
+    setMessages((prev) => [...prev, { sender: "user", text: messageText }, { sender: "bot", text: "." }]);
     setInput("");
 
     // Check if message contains "?" to count it as a question
@@ -133,14 +139,15 @@ function Chatbot() {
       } else if (response.data?.answers?.length > 0) {
         botResponse = response.data.answers[0].answer;
       }
-  
+      setIsTyping(false); // Re-enable input after bot response
       await typeOutMessage(botResponse);
     } catch (error) {
+      setIsTyping(false); // Re-enable input after bot response
       console.error("Error sending message:", error);
       await typeOutMessage("Sorry, something went wrong.");
     }
   
-    setIsTyping(false); // Re-enable input after bot response
+    
 
     // Focus back to input field
     setTimeout(() => inputRef.current?.focus(), 10);
