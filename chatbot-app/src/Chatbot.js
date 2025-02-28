@@ -182,11 +182,18 @@ function Chatbot() {
 
         <div className="chat-window">
           <div className="chat-messages">
-            {messages.map((msg, index) => (
-              <div key={index} className={`message-container ${msg.sender}`}>
-                <div className={`message ${msg.sender}`}>{msg.text}</div>
-              </div>
-            ))}
+          {messages.map((msg, index) => (
+            <div key={index} className={`message ${msg.sender}`}>
+              {msg.sender === "bot" && (
+                <img 
+                  src="/Fredrik.jpg" 
+                  alt="Bot Avatar" 
+                  className="bot-avatar" 
+                />
+              )}
+              <p>{msg.text}</p>
+            </div>
+          ))}
             <div ref={messagesEndRef} /> {/* Invisible div to scroll to */}
           </div>
         </div>

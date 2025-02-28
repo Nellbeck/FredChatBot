@@ -179,4 +179,19 @@
   transform: translateY(0);
 }
 
+.bot-avatar {
+  width: 40px;  /* Fixed width */
+  height: 40px; /* Fixed height */
+  min-width: 40px; /* Ensures it never shrinks */
+  min-height: 40px;
+  border-radius: 50%; /* Keeps it circular */
+  object-fit: cover; /* Ensures the image fills the space properly */
+  margin-right: 10px;
+  align-self: flex-start; /* Aligns the avatar with the start of the text */
+}
 
+.chat-messages p {
+  margin:0;
+  display: flex;
+  align-items: center;
+}
