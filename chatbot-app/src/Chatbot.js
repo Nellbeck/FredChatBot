@@ -21,11 +21,11 @@ function Chatbot() {
   );
 
   const [messages, setMessages] = useState([
-    { sender: "bot", text: "Hello and welcome!I'm Fredriks chatbot. Ask me anything about Fredrik and I'll do my best to answer." }
+    { sender: "bot", text: "Hello and welcome! I'm Fredriks chatbot. Ask me anything about Fredrik and I'll do my best to answer." }
   ]);
 
   useEffect(() => {
-    typeOutMessage("Hello and welcome!I'm Fredriks chatbot. Ask me anything about Fredrik and I'll do my best to answer.");
+    typeOutMessage("Hello and welcome! I'm Fredriks chatbot. Ask me anything about Fredrik and I'll do my best to answer.");
   }, []);
 
   const [input, setInput] = useState("");
